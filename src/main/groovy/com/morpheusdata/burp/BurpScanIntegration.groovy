@@ -21,6 +21,8 @@ class BurpScanIntegration extends Plugin {
         this.setName("BurpScan");
         this.settings.add(burpApiUrl);
         this.settings.add(burpApiKey);
+        this.setAuthor("Uthman Al-Ayek Eqbal");
+        this.setDescription("Trigger a Burp Scan from the Morpheus UI");
 
     }
 
