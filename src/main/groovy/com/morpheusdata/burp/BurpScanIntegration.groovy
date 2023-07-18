@@ -18,7 +18,7 @@ class BurpScanIntegration extends Plugin {
 
     @Override
     void initialize() {
-        this.setName("BurpScan");
+        this.setName("Burp Scan");
         this.settings.add(burpApiUrl);
         this.settings.add(burpApiKey);
         this.setAuthor("Uthman Al-Ayek Eqbal");
