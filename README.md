@@ -1,2 +1,2 @@
 # morpheus-burp-plugin
-A Morpheus plugin that triggers a scan in Burp Suite
+A Morpheus plugin to trigger a scan in Burp Suite
