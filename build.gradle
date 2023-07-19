@@ -37,12 +37,12 @@ dependencies {
 jar {
 	manifest {
 		attributes(
-			'Plugin-Class': 'com.morpheusdata.BurpScanIntegration.BurpScanIntegration',
+			'Plugin-Class': 'com.morpheusdata.burp.BurpScanTaskPlugin',
 			'Plugin-Version': 1.0,
-			'Morpheus-Name': 'Burp Scan Plugin',
+			'Morpheus-Name': 'Burp Scan Task Plugin',
 			'Morpheus-Organization': 'morpheusdata',
 			'Morpheus-Code': 'burp-scan-plugin',
-			'Morpheus-Description': 'A plugin that allows you to trigger Burp scans from within Morpheus by using Burp\'s REST API',
+			'Morpheus-Description': 'A plugin that allows you to trigger a Burp scan from within Morpheus by using Burp\'s REST API',
 			'Morpheus-Logo': 'assets/goku.svg',
 			'Morpheus-Logo-Dark': 'assets/goku.svg',
 			'Morpheus-Color': '#ffffff',
