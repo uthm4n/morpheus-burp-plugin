@@ -1,11 +1,11 @@
-package com.morpheusdata.BurpScanIntegration;
+package com.morpheusdata.burp;
 
 import com.morpheusdata.core.Plugin;
 import com.morpheusdata.model.OptionType;
 import com.morpheusdata.model.OptionType.InputType;
 import java.util.Arrays;
 
-class BurpScanIntegration extends Plugin {
+class BurpScanTaskPlugin extends Plugin {
 
     public static final OptionType burpApiUrl = getBurpApiURL();
     public static final OptionType burpApiKey = getBurpApiKey();
@@ -13,7 +13,7 @@ class BurpScanIntegration extends Plugin {
 
     @Override
     String getCode() {
-        return "burp-scan-integration";
+        return "burp-scan-task";
     }
 
     @Override
