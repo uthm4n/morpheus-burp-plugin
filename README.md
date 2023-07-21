@@ -1,2 +1,2 @@
 # morpheus-burp-plugin
-Trigger a scan in Burp Suite from the Morpheus UI 
+Trigger a Burp Scan from Morpheus 
