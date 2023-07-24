@@ -92,6 +92,6 @@ class BurpScanTaskProvider implements TaskProvider {
 
     @Override
     Icon getIcon() {
-        return new Icon(path:"goku.svg", darkPath: "goku.svg") 
+        return new Icon(path:"assets/burp-white.svg", darkPath: "assets/burp-black.svg") 
     }
 }
