@@ -22,7 +22,7 @@ class BurpScanTaskProvider implements TaskProvider {
 
     @Override
     TaskType.TaskScope getScope() {
-        return TaskType.TaskScope.all
+        return TaskType.TaskScope.all  
     }
 
     @Override
@@ -65,7 +65,8 @@ class BurpScanTaskProvider implements TaskProvider {
         return [
                 new OptionType(code: 'burp.apiUrl', name: 'Burp API URL', inputType: OptionType.InputType.TEXT, fieldName: 'apiUrl', fieldLabel: 'REST API Url', displayOrder: 0),
                 new OptionType(code: 'burp.apiKey', name: 'Burp API Key', inputType: OptionType.InputType.TEXT, fieldName: 'apiKey', fieldLabel: 'API Key', displayOrder: 1),
-                new OptionType(code: 'burp.scanConfiguration', name: 'Scan Configuration (JSON)', inputType: OptionType.InputType.CODE_EDITOR, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration', displayOrder: 2),
+				new OptionType(code: 'burp.urlToScan', name: 'URL to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlToScan', fieldLabel: 'URL to scan', displayOrder: 2),
+                new OptionType(code: 'burp.scanConfiguration', name: 'Scan Configuration (JSON)', inputType: OptionType.InputType.CODE_EDITOR, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration', displayOrder: 3)
         ]
     }
 
@@ -91,6 +92,6 @@ class BurpScanTaskProvider implements TaskProvider {
 
     @Override
     Icon getIcon() {
-        return new Icon(path:"burp-white.svg", darkPath: "burp-black.svg") 
+        return new Icon(path:"goku.svg", darkPath: "goku.svg") 
     }
 }

@@ -15,7 +15,7 @@ class BurpScanTaskPlugin extends Plugin {
     @Override
     void initialize() {
         BurpScanTaskProvider BurpScanTaskProvider = new BurpScanTaskProvider(this, morpheus)
-	this.pluginProviders.put("burp", BurpScanTaskProvider)
+		this.pluginProviders.put("burp", BurpScanTaskProvider)
         this.setName("Burp Scan");
         this.setAuthor("Uthman Al-Ayek Eqbal");
         this.setDescription("Trigger a Burp Scan from the Morpheus UI");
