@@ -9,6 +9,7 @@ import com.morpheusdata.model.Instance
 import com.morpheusdata.model.Task
 import com.morpheusdata.model.TaskConfig
 import com.morpheusdata.model.TaskResult
+import com.morpheusdata.response.ServiceResponse
 import groovy.json.JsonSlurper
 import groovy.text.SimpleTemplateEngine
 import groovy.util.logging.Slf4j
@@ -71,10 +72,12 @@ class BurpScanTaskService extends AbstractTaskService {
                 .headers = ['Content-Type':'application/json']
                 .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + "\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" // urlToScan won't be injected. Find a proper way to inject this into the array within the JSON object
             
-            def results = client.callApi(burpRestUrl,path,requestOptions,'POST') 
-            if (results.success) {
-                String scanID = results.headers['Location'] // get the scan ID from the Location header of the response
+            ServiceResponse response = client.callApi(burpRestUrl,path,requestOptions,'POST') 
+            if (response.success) {
+                String scanID = response.headers['Location'] // get the scan ID from the Location header of the response
+                System.out.println(scanID);
                 String getStatusUrl = burpRestUrl + path + scanID 
+                System.out.println(response);
 
                 // do more stuff here
         }
