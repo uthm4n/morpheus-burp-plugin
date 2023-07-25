@@ -61,20 +61,22 @@ class BurpScanTaskService extends AbstractTaskService {
     TaskResult executeTask(Task task, TaskConfig config) {
         String burpRestUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
         String burpRestApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
-        String burpScanConfig =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  /// do I need to change this to a JSON object? 
+        String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  /// do I need to change this to a JSON object? 
         String urlToScan = task.taskOptions.find { it.optionType.code == 'burp.urlToScan' }?.value
 
         HttpApiClient client = new HttpApiClient()
         try {
             String path = "/${burpRestApiKey}/v0.1/scan/"
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
-            requestOptions.headers = ['Content-Type':'application/json']
-            requestOptions.body = "{'scan_configurations':[{'config':" + burpScanConfig + ",'type':'CustomConfiguration'}],'urls':['$(urlToScan)']}" // is this even correct? How would it be interpreted in the HTTP body? burpScanConfig needs to be json-escaped... what is the best method to do this?
+                .headers = ['Content-Type':'application/json']
+                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + "\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" // urlToScan won't be injected. Find a proper way to inject this into the array within the JSON object
+            
+            def results = client.callJsonApi(burpRestUrl,path,requestOptions,'POST') 
+            if (results.success) {
+                String scanID = results.headers['Location'] // get the scan ID from the Location header of the response
+                String getStatusUrl = burpRestUrl + path + scanID 
 
-            def results = client.callJsonApi(burpRestUrl,path,requestOptions,'POST') // or should I be using callApi? 
-            // result logic i.e. if success... do ____________ , 
-            // results logic needs to parse the Location header of the response and retrieve the numerical value 
-            // GET request to $(burpRestUrl)/$(burpRestApiKey)/v0.1/scan/<value-retrieved-from-location-header-of-POST>
+                // do more stuff here
         }
         catch (Exception e) {
             System.out.println(e)
