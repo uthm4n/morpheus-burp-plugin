@@ -70,8 +70,7 @@ class BurpScanTaskService extends AbstractTaskService {
             String path = "/${burpRestApiKey}/v0.1/scan/"
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
                 .headers = ['Content-Type':'application/json']
-                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + "\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" // urlToScan won't be injected. Find a proper way to inject this into the array within the JSON object
-            
+                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + """\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}""" 
             ServiceResponse response = client.callApi(burpRestUrl,path,requestOptions,'POST') 
             if (response.success) {
                 String scanID = response.headers['Location'] // get the scan ID from the Location header of the response
