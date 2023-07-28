@@ -62,7 +62,7 @@ class BurpScanTaskService extends AbstractTaskService {
     TaskResult executeTask(Task task, TaskConfig config) {
         String burpRestUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
         String burpRestApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
-        String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value   
+        String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  /// do I need to change this to a JSON object? 
         String urlToScan = task.taskOptions.find { it.optionType.code == 'burp.urlToScan' }?.value
 
         HttpApiClient client = new HttpApiClient()
@@ -70,18 +70,31 @@ class BurpScanTaskService extends AbstractTaskService {
             String path = "/${burpRestApiKey}/v0.1/scan/"
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
                 .headers = ['Content-Type':'application/json']
-                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + """\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}""" 
-            ServiceResponse response = client.callApi(burpRestUrl,path,requestOptions,'POST') 
-            if (response.success) {
-                String scanID = response.headers['Location'] // get the scan ID from the Location header of the response
-                System.out.println(scanID);
-                String getStatusUrl = burpRestUrl + path + scanID 
-                System.out.println(response);
+                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + """\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}""" // how could urlToScan be injected into the JSON? 
 
-                // do more stuff here
+            ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') // would ServiceResponse response be valid? if you don't have a username or password in the API call, are null's the best way to do this? 
+            if (response.success) {
+                log.info("Scan task for ${urlToScan} created successfully")
+                log.info("Getting scan ID...")
+                String scanID = response.headers['Location'] // retrieve the scan ID from the Location header of the response
+                log.info("Scan ID = ${scanID}")
+                String scanStatusUrl = burpRestUrl + path + scanID 
+                scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions.headers, 'GET')
+   //             scanResultsAsMap = new JsonSlurper().parseText(scanResults)      // jsonSlurper logic? 
+                if (scanResults.success) {
+                    return new TaskResult(
+                            success: true,
+                            data   : scanResultsAsMap.data,
+                            output : scanResultsAsMap.content
+                        )
+                }
+                // how are task results retrieved ? 
+                // Is it possible for the results window to dynamically update - like an Ansible task - with the scan status ?
+                // Can I embed an option list in my plugin? I.e. A select list for all the available default scan configs in Burp 
+            }
         }
-        catch (Exception e) {
-            System.out.println(e)
-        }
-    }   
+        catch(Exception e) {
+            System.out.println(e);
+        }   
+    }
 }
