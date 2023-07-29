@@ -70,7 +70,7 @@ class BurpScanTaskService extends AbstractTaskService {
             String path = "/${burpRestApiKey}/v0.1/scan/"
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
                 .headers = ['Content-Type':'application/json']
-                .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + """\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}""" // how could urlToScan be injected into the JSON? 
+                .body = "{\"scan_configurations\":[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
 
             ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
