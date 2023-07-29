@@ -72,7 +72,7 @@ class BurpScanTaskService extends AbstractTaskService {
                 .headers = ['Content-Type':'application/json']
                 .body = "{\"scan_configurations\":[{\"config\":\"" + burpScanConfigName + """\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}""" // how could urlToScan be injected into the JSON? 
 
-            ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') // would ServiceResponse response be valid? if you don't have a username or password in the API call, are null's the best way to do this? 
+            ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
                 log.info("Scan task for ${urlToScan} created successfully")
                 log.info("Getting scan ID...")
