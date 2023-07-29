@@ -62,7 +62,7 @@ class BurpScanTaskService extends AbstractTaskService {
     TaskResult executeTask(Task task, TaskConfig config) {
         String burpRestUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
         String burpRestApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
-        String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  /// do I need to change this to a JSON object? 
+        String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  
         String urlToScan = task.taskOptions.find { it.optionType.code == 'burp.urlToScan' }?.value
 
         HttpApiClient client = new HttpApiClient()
@@ -76,7 +76,7 @@ class BurpScanTaskService extends AbstractTaskService {
             if (response.success) {
                 log.info("Scan task for ${urlToScan} created successfully")
                 log.info("Getting scan ID...")
-                String scanID = response.headers['Location'] // retrieve the scan ID from the Location header of the response
+                String scanID = response.headers['Location'] 
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
                 scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions.headers, 'GET')
