@@ -68,9 +68,17 @@ class BurpScanTaskService extends AbstractTaskService {
         HttpApiClient client = new HttpApiClient()
         try {
             String path = "/${burpRestApiKey}/v0.1/scan/"
+            def body = [
+                    'scan_configurations' : [
+                        ['name': burpScanConfigName, 'type': 'NamedConfiguration']
+                    ],
+                    'urls': []
+            ]
+            body['urls'] << urlToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
                 .headers = ['Content-Type':'application/json']
-                .body = "{\"scan_configurations\":[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
+                .body = body
+                //.body = "{scan_configurations:[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
 
             ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
