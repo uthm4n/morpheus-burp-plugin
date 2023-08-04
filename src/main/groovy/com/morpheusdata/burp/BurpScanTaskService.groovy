@@ -81,14 +81,12 @@ class BurpScanTaskService extends AbstractTaskService {
 
             ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
-                HttpApiClient.RequestOptions requestOptions2 = new HttpApiClient.RequestOptions()
-                requestOptions2.headers = ['Content-Type':'application/json']
                 log.info("Scan task for ${urlToScan} created successfully")
                 log.info("Getting scan ID...")
                 String scanID = response.headers['Location'] 
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
-                def scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions2, 'GET')
+                def scanResults = client.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET')
                 if (scanResults.success) {
                     return new TaskResult(
                             success: true,
