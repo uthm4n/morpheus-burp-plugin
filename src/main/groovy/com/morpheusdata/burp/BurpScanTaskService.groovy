@@ -90,12 +90,11 @@ class BurpScanTaskService extends AbstractTaskService {
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
                 def scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions2, 'GET')
-                def scanResultsAsMap = new JsonSlurper().parseText(scanResults.data) 
                 if (scanResults.success) {
                     return new TaskResult(
                             success: true,
-                            data   : scanResultsAsMap,
-                            output : scanResultsAsMap
+                            data   : scanResults.data,
+                            output : scanResults.data
                         )
                 }
                 // how are task results retrieved ? 
