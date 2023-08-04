@@ -68,24 +68,33 @@ class BurpScanTaskService extends AbstractTaskService {
         HttpApiClient client = new HttpApiClient()
         try {
             String path = "/${burpRestApiKey}/v0.1/scan/"
+            def body = [
+                    'scan_configurations' : [
+                        ['name': burpScanConfigName, 'type': 'NamedConfiguration']
+                    ],
+                    'urls': []
+            ]
+            body['urls'] << urlToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
-                .headers = ['Content-Type':'application/json']
-                .body = "{\"scan_configurations\":[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
+            requestOptions.headers = ['Content-Type':'application/json']
+            requestOptions.body = body
+                //.body = "{scan_configurations:[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
 
             ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
+                HttpApiClient.RequestOptions requestOptions2 = new HttpApiClient.RequestOptions()
+                requestOptions2.headers = ['Content-Type':'application/json']
                 log.info("Scan task for ${urlToScan} created successfully")
                 log.info("Getting scan ID...")
                 String scanID = response.headers['Location'] 
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
-                scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions.headers, 'GET')
-   //             scanResultsAsMap = new JsonSlurper().parseText(scanResults)      // jsonSlurper logic? 
+                def scanResults = client.callJsonApi(scanStatusUrl, null, null, null, requestOptions2, 'GET')
                 if (scanResults.success) {
                     return new TaskResult(
                             success: true,
-                            data   : scanResultsAsMap.data,
-                            output : scanResultsAsMap.content
+                            data   : scanResults.data,
+                            output : scanResults.data
                         )
                 }
                 // how are task results retrieved ? 
