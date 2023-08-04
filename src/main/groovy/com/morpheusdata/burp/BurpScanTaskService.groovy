@@ -65,7 +65,7 @@ class BurpScanTaskService extends AbstractTaskService {
         String burpScanConfigName =  task.taskOptions.find { it.optionType.code == 'burp.scanConfiguration' }?.value  
         String urlToScan = task.taskOptions.find { it.optionType.code == 'burp.urlToScan' }?.value
 
-        HttpApiClient client = new HttpApiClient()
+        HttpApiClient burpClient = new HttpApiClient()
         try {
             String path = "/${burpRestApiKey}/v0.1/scan/"
             def body = [
@@ -78,15 +78,14 @@ class BurpScanTaskService extends AbstractTaskService {
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
             requestOptions.headers = ['Content-Type':'application/json']
             requestOptions.body = body
-
-            ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
+            ServiceResponse response = burpClient.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
                 log.info("Scan task for ${urlToScan} created successfully")
                 log.info("Getting scan ID...")
                 String scanID = response.headers['Location'] 
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
-                def scanResults = client.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET')
+                def scanResults = burpClient.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET')
                 if (scanResults.success) {
                     return new TaskResult(
                             success: true,
@@ -97,7 +96,9 @@ class BurpScanTaskService extends AbstractTaskService {
             }
         }
         catch(Exception e) {
-            System.out.println(e);
-        }   
+            System.out.println(e.printStackTrace())
+        } finally {
+            burpClient.shutdownClient()
+        }
     }
 }
