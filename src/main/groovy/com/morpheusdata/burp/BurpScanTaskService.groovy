@@ -78,7 +78,6 @@ class BurpScanTaskService extends AbstractTaskService {
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
             requestOptions.headers = ['Content-Type':'application/json']
             requestOptions.body = body
-                //.body = "{scan_configurations:[{\"name\":\"${burpScanConfigName}\",\"type\":\"NamedConfiguration\"}],\"urls\":[\"${urlToScan}\"]}" 
 
             ServiceResponse response = client.callApi(burpRestUrl, path, null, null, requestOptions, 'POST') 
             if (response.success) {
@@ -97,9 +96,6 @@ class BurpScanTaskService extends AbstractTaskService {
                             output : scanResults.data
                         )
                 }
-                // how are task results retrieved ? 
-                // Is it possible for the results window to dynamically update - like an Ansible task - with the scan status ?
-                // Can I embed an option list in my plugin? I.e. A select list for all the available default scan configs in Burp 
             }
         }
         catch(Exception e) {
