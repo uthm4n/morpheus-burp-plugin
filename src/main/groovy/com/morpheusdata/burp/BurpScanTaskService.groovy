@@ -86,13 +86,26 @@ class BurpScanTaskService extends AbstractTaskService {
                 log.info("Scan ID = ${scanID}")
                 String scanStatusUrl = burpRestUrl + path + scanID 
                 def scanResults = burpClient.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET')
-                if (scanResults.success) {
-                    return new TaskResult(
+                while (response.success && scanResults.data?.scan_status != 'succeeded') {
+                    scanResults();
+                    sleep(5000l)
+                    if (scanResults.data?.scan_status == 'succeeded') { // does this actually work?
+                        return new TaskResult(
                             success: true,
                             data   : scanResults.data,
                             output : scanResults.data
-                        )
+                            )
+                    }
                 }
+            }
+/*                 if (scanResults.data?.scan_status = 'failed') {
+                    log.info("Scan failed. Please check Burp for more details.")
+                    return new TaskResult(
+                        success: false, 
+                        data: scanResults.data, 
+                        output: scanResults.data
+                    )
+                } */
             }
         }
         catch(Exception e) {
@@ -101,4 +114,3 @@ class BurpScanTaskService extends AbstractTaskService {
             burpClient.shutdownClient()
         }
     }
-}
