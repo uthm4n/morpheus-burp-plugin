@@ -30,10 +30,10 @@ jar {
 		attributes(
 			'Plugin-Class': 'com.morpheusdata.burp.BurpScanTaskPlugin',
 			'Plugin-Version': 1.0,
-			'Morpheus-Name': 'Burp Scan Task',
+			'Morpheus-Name': 'Burp Scan Task Plugin',
 			'Morpheus-Organization': 'morpheusdata',
 			'Morpheus-Code': 'burp-scan-plugin',
-			'Morpheus-Description': 'Adds a new task type in Morpheus called 'Burp Scan Task' that interacts with the Burp Suite Professional REST API',
+			'Morpheus-Description': 'A plugin that allows you to trigger a Burp scan from within Morpheus by using Burp\'s REST API',
 			'Morpheus-Logo': 'assets/burp-white.svg',
 			'Morpheus-Logo-Dark': 'assets/burp-black.svg',
 			'Morpheus-Color': '#ffffff',
