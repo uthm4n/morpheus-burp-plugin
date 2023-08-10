@@ -87,9 +87,9 @@ class BurpScanTaskService extends AbstractTaskService {
                 String scanStatusUrl = burpRestUrl + path + scanID 
                 def scanResults = burpClient.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET')
                 while (response.success && scanResults.data?.scan_status != 'succeeded') {
-                    // scanResults call again
-                    sleep(5000l)
-                    if (scanResults.data?.scan_status == 'succeeded') { // does this actually work? - goal: keep running until the scan's status is suceeded
+                    burpClient.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET') // there is a better way to do this
+                    sleep(6000)
+                if (scanResults.data?.scan_status == 'succeeded') { 
                         return new TaskResult(
                             success: true,
                             data   : scanResults.data,
