@@ -66,7 +66,7 @@ class BurpScanTaskProvider implements TaskProvider {
                 new OptionType(code: 'burp.apiUrl', name: 'Burp API URL', inputType: OptionType.InputType.TEXT, fieldName: 'apiUrl', fieldLabel: 'REST API Url', displayOrder: 0),
                 new OptionType(code: 'burp.apiKey', name: 'Burp API Key', inputType: OptionType.InputType.TEXT, fieldName: 'apiKey', fieldLabel: 'API Key', displayOrder: 1),
 		new OptionType(code: 'burp.urlToScan', name: 'URL to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlToScan', fieldLabel: 'URL to scan', displayOrder: 2),
-                new OptionType(code: 'burp.scanConfiguration', name: 'Scan Configuration Name', inputType: OptionType.InputType.TEXT, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration Name', displayOrder: 3)
+                new OptionType(code: 'burp.scanConfiguration', name: 'Scan Configuration', inputType: OptionType.InputType.SELECT, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration', optionSource: 'burpScanConfigList', displayOrder: 3)
         ]
     }
 
