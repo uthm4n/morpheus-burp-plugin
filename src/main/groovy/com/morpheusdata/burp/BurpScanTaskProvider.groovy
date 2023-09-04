@@ -63,10 +63,11 @@ class BurpScanTaskProvider implements TaskProvider {
     @Override
     List<OptionType> getOptionTypes() {
         return [
-                new OptionType(code: 'burp.apiUrl', name: 'Burp API URL', inputType: OptionType.InputType.TEXT, fieldName: 'apiUrl', fieldLabel: 'REST API Url', displayOrder: 0),
-                new OptionType(code: 'burp.apiKey', name: 'Burp API Key', inputType: OptionType.InputType.TEXT, fieldName: 'apiKey', fieldLabel: 'API Key', displayOrder: 1),
-		new OptionType(code: 'burp.urlToScan', name: 'URL to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlToScan', fieldLabel: 'URL to scan', displayOrder: 2),
-                new OptionType(code: 'burp.scanConfiguration', name: 'Scan Configuration', inputType: OptionType.InputType.SELECT, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration', optionSource: 'burpScanConfigList', displayOrder: 3)
+                new OptionType(code: 'burp.apiUrl', name: 'Burp API URL', inputType: OptionType.InputType.TEXT, fieldName: 'apiUrl', fieldLabel: 'REST API Url', required: true, displayOrder: 0),
+                new OptionType(code: 'burp.apiKey', name: 'Burp API Key', inputType: OptionType.InputType.TEXT, fieldName: 'apiKey', fieldLabel: 'API Key', required: true, displayOrder: 1),
+		        new OptionType(code: 'burp.urlToScan', name: 'URL to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlToScan', fieldLabel: 'URL to scan', required: true, displayOrder: 2),
+   //             new OptionType(code: 'burp.scanConfigurationType', name: 'Scan Configuration Type', inputType: OptionType.InputType.SELECT, fieldName: 'scanConfigurationType', fieldLabel: 'Scan Configuration Type', optionSource: 'burpScanConfigType', displayOrder: 3),
+                new OptionType(code: 'burp.scanConfigurationNamed', name: 'Scan Configuration', inputType: OptionType.InputType.SELECT, fieldName: 'scanConfiguration', fieldLabel: 'Scan Configuration', optionSource: 'burpScanConfigNamedList', displayOrder: 4) // visibleOnCode: 'burp.scanConfigurationType:Default' , dependsOn: 'burp.scanConfigurationType', 
         ]
     }
 
