@@ -21,13 +21,12 @@ class BurpScanTaskPlugin extends Plugin {
 		this.pluginProviders.put(optionSourceProvider.getCode(),optionSourceProvider)
         this.setName("Burp Scan");
         this.setAuthor("Uthman Al-Ayek Eqbal");
-        this.setDescription("Trigger a Burp Scan from the Morpheus UI")
-        this.setPermissions([Permission.build('Burp Scan Task','burp-scan-task-permission', 'security', [Permission.AccessType.none, Permission.AccessType.full])])
+        this.setDescription("Trigger a Burp Scan from a new Morpheus task type")
+        this.setPermissions([Permission.build('Burp Scan','burp-scan-task-permission', 'security', [Permission.AccessType.none, Permission.AccessType.full])])
 
     }
 
     @Override
     void onDestroy() {
-        morpheus.task.disableTask('burp').blockingGet()
     }
 }

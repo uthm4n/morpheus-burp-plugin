@@ -36,17 +36,17 @@ class BurpOptionSourceProvider implements OptionSourceProvider{
 
 	@Override
 	List<String> getMethodNames() {
-		return new ArrayList<String>(['burpScanConfigNamedList', 'burpScanConfigType'])
+		return new ArrayList<String>(['defaultScanConfigList', 'scanConfigType'])
 	}
 
-    def burpScanConfigType(args) {
+    def scanConfigType(args) {
         return [
             [name: 'Default', value: 'Default'], 
             [name: 'Custom', value: 'Custom']
         ]
     }
 
-	def burpScanConfigNamedList(args) {
+	def defaultScanConfigList(args) {
 		return [
             [name:'Add requested item to site map', value:'Add requested item to site map'],            
             [name:'Audit checks - all except JavaScript analysis', value:'Audit checks - all except JavaScript analysis'],
