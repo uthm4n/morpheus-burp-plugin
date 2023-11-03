@@ -63,18 +63,31 @@ class BurpScanTaskService extends AbstractTaskService {
     TaskResult executeTask(Task task, TaskConfig config) {
         String restApiUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
         String restApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
-        String defaultScanConfig =  task.taskOptions.find { it.optionType.code == 'burp.defaultScanConfigurations' }?.value
+        String scanConfigType = task.taskOptions.find { it.optionType.code == 'burp.scanConfigurationType' }?.value
+        String defaultScanConfig = task.taskOptions.find { it.optionType.code == 'burp.defaultScanConfigurations' }?.value
+        String customScanConfig = task.taskOptions.find { it.optionType.code == 'burp.customScanConfiguration' }?.value
         String urlsToScan = task.taskOptions.find { it.optionType.code == 'burp.urlsToScan' }?.value
 
         HttpApiClient burpClient = new HttpApiClient()
         try {
             String path = "/${restApiKey}/v0.1/scan/"
+            if (scanConfigType == 'Default') {
             def body = [
                     'scan_configurations' : [
                         ['name': defaultScanConfig, 'type': 'NamedConfiguration']
                     ],
                     'urls': []
             ]
+            } else if (scanConfigType == 'Custom') {
+                StringEscapeUtils stringEscape = new StringEscapeUtils()
+                String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
+                def body = [
+                        'scan_configurations' : [
+                            ['config': escapedJSONConfig, 'type': 'CustomConfiguration']
+                        ],
+                        'urls': []
+                ]
+            }
             body['urls'] << urlsToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
             requestOptions.headers = ['Content-Type':'application/json']
