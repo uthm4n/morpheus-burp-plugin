@@ -12,6 +12,7 @@ import com.morpheusdata.model.TaskResult
 import com.morpheusdata.response.ServiceResponse
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
+import groovy.json.StringEscapeUtils
 import groovy.text.SimpleTemplateEngine
 import groovy.util.logging.Slf4j
 
