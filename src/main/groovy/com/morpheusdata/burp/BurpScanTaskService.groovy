@@ -82,7 +82,7 @@ class BurpScanTaskService extends AbstractTaskService {
             } else if (scanConfigType == 'Custom') {
                 StringEscapeUtils stringEscape = new StringEscapeUtils()
                 String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
-                String finalCustomConfig = escapedJSONConfig.replaceAll("\\n", "")  # remove the newline characters in preparation for injection in the http body - fussy burp stuff 
+                String finalCustomConfig = escapedJSONConfig.replaceAll("\\n", "")  // remove the newline characters in preparation for injection in the http body - fussy burp stuff 
                 def body = [
                         'scan_configurations' : [
                             ['config': finalCustomConfig, 'type': 'CustomConfiguration']
