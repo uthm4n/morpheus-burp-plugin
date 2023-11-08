@@ -73,12 +73,12 @@ class BurpScanTaskService extends AbstractTaskService {
         try {
             String path = "/${restApiKey}/v0.1/scan/"
             if (scanConfigType == 'Default') {
-            def body = [
-                    'scan_configurations' : [
-                        ['name': defaultScanConfig, 'type': 'NamedConfiguration']
-                    ],
-                    'urls': []
-            ]
+                def body = [
+                        'scan_configurations' : [
+                            ['name': defaultScanConfig, 'type': 'NamedConfiguration']
+                        ],
+                        'urls': []
+                ]
             } else if (scanConfigType == 'Custom') {
                 StringEscapeUtils stringEscape = new StringEscapeUtils()
                 String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
