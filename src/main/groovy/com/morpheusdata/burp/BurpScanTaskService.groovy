@@ -71,9 +71,16 @@ class BurpScanTaskService extends AbstractTaskService {
 
         HttpApiClient burpClient = new HttpApiClient()
         try {
-            String path = "/${restApiKey}/v0.1/scan/"
+            // logic for quick connectivity test 
+            // separate method?
+            //
+            //
+            //
+            //
+           
+            def body 
             if (scanConfigType == 'Default') {
-                def body = [
+                body = [
                         'scan_configurations' : [
                             ['name': defaultScanConfig, 'type': 'NamedConfiguration']
                         ],
@@ -83,7 +90,7 @@ class BurpScanTaskService extends AbstractTaskService {
                 StringEscapeUtils stringEscape = new StringEscapeUtils()
                 String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
                 escapedJSONConfig = escapedJSONConfig.replace("\\n", "")  // remove the newline characters in preparation for injection in the http body - fussy burp stuff 
-                def body = [
+                body = [
                         'scan_configurations' : [
                             ['config': escapedJSONConfig, 'type': 'CustomConfiguration']
                         ],
@@ -92,6 +99,7 @@ class BurpScanTaskService extends AbstractTaskService {
             }
             body['urls'] << urlsToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
+            String path = "/${restApiKey}/v0.1/scan/"
             requestOptions.headers = ['Content-Type':'application/json']
             requestOptions.body = body
             ServiceResponse response = burpClient.callApi(restApiUrl, path, null, null, requestOptions, 'POST') 
