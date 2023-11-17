@@ -27,7 +27,7 @@ class BurpScanTaskProvider implements TaskProvider {
 
     @Override
     String getDescription() {
-        return "Adds a new Morpheus task type called 'Burp Scan' to trigger a scan in Burp Suite Professional. A new report type is also added to fetch the results and see them in the Morpheus UI."
+        return "Adds a new task type called 'Burp Scan' that interacts with Burp Suite Professional's REST API. A new report type is also added to organize the results into a report visiible in Morpheus"
     }
 
     @Override
@@ -65,7 +65,7 @@ class BurpScanTaskProvider implements TaskProvider {
         return [
                 new OptionType(code: 'burp.apiUrl', name: 'Burp API URL', inputType: OptionType.InputType.TEXT, fieldName: 'apiUrl', fieldLabel: 'REST API URL', required: true, displayOrder: 0),
                 new OptionType(code: 'burp.apiKey', name: 'Burp API Key', inputType: OptionType.InputType.TEXT, fieldName: 'apiKey', fieldLabel: 'REST API Key', required: true, displayOrder: 1),
-		        new OptionType(code: 'burp.urlToScan', name: 'URL(s) to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlToScan', fieldLabel: 'URL(s) to scan', required: true, displayOrder: 2),
+		        new OptionType(code: 'burp.urlsToScan', name: 'URL(s) to scan', inputType: OptionType.InputType.TEXT, fieldName: 'urlsToScan', fieldLabel: 'URL(s) to scan', required: true, displayOrder: 2),
                 new OptionType(code: 'burp.scanConfigurationType', name: 'Scan Configuration Type', inputType: OptionType.InputType.SELECT, fieldName: 'scanConfigurationType', fieldLabel: 'Scan Configuration Type', optionSource: 'scanConfigType', displayOrder: 3),
                 new OptionType(code: 'burp.defaultScanConfigurations', name: 'Default Scan Configuration', inputType: OptionType.InputType.SELECT, fieldName: 'defaultScanConfigurations', fieldLabel: 'Select A Scan Configuration', optionSource: 'defaultScanConfigList', dependsOn: 'scanConfigurationType', visibleOnCode: 'scanConfigurationType:(Default)', displayOrder: 4),
                 new OptionType(code: 'burp.customScanConfiguration', name: 'Custom Scan Configuration', inputType: OptionType.InputType.CODE_EDITOR, fieldName: 'customScanConfigurationJSON', fieldLabel: 'Scan Configuration (JSON)', dependsOn: 'scanConfigurationType', visibleOnCode: 'scanConfigurationType:(Custom)', displayOrder: 5) 

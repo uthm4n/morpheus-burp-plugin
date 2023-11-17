@@ -2,13 +2,14 @@ package com.morpheusdata.burp
 
 import com.morpheusdata.core.AbstractTaskService
 import com.morpheusdata.core.MorpheusContext
-import com.morpheusdata.core.util.HttpApiClient
 import com.morpheusdata.model.ComputeServer
 import com.morpheusdata.model.Container
 import com.morpheusdata.model.Instance
 import com.morpheusdata.model.Task
 import com.morpheusdata.model.TaskConfig
 import com.morpheusdata.model.TaskResult
+import com.morpheusdata.core.util.HttpApiClient
+import com.morpheusdata.core.util.ConnectionUtils
 import com.morpheusdata.response.ServiceResponse
 import groovy.json.JsonSlurper
 import groovy.json.JsonBuilder
@@ -62,6 +63,7 @@ class BurpScanTaskService extends AbstractTaskService {
 
 
     TaskResult executeTask(Task task, TaskConfig config) {
+        // get task options 
         String restApiUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
         String restApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
         String scanConfigType = task.taskOptions.find { it.optionType.code == 'burp.scanConfigurationType' }?.value
@@ -69,15 +71,22 @@ class BurpScanTaskService extends AbstractTaskService {
         String customScanConfig = task.taskOptions.find { it.optionType.code == 'burp.customScanConfiguration' }?.value
         String urlsToScan = task.taskOptions.find { it.optionType.code == 'burp.urlsToScan' }?.value
 
+        // set up api client for interaction with burp 
         HttpApiClient burpClient = new HttpApiClient()
+
         try {
-            // logic for quick connectivity test 
-            // separate method?
-            //
-            //
-            //
-            //
-           
+            // test connection to burp
+            String burpApiUrl = restApiUrl + "/${restApiKey}/v0.1"
+            try { 
+                def burpOnline = ConnectionUtils.testHostConnectivity(burpApiUrl, null, true, false, null)
+                if(burpOnline) {
+                    log.info("Burp is accessible, woohoo!")
+                }
+            } catch(e) {
+                log.error("Error connecting to Burp on {}", apiUrl, e)
+            }
+
+            // prepare http request
             def body 
             if (scanConfigType == 'Default') {
                 body = [
@@ -89,7 +98,7 @@ class BurpScanTaskService extends AbstractTaskService {
             } else if (scanConfigType == 'Custom') {
                 StringEscapeUtils stringEscape = new StringEscapeUtils()
                 String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
-                escapedJSONConfig = escapedJSONConfig.replace("\\n", "")  // remove the newline characters in preparation for injection in the http body - fussy burp stuff 
+                escapedJSONConfig = escapedJSONConfig.replace("\\n", "")  // remove the newline characters in preparation for injection into the http body - fussy burp stuff 
                 body = [
                         'scan_configurations' : [
                             ['config': escapedJSONConfig, 'type': 'CustomConfiguration']
@@ -99,19 +108,20 @@ class BurpScanTaskService extends AbstractTaskService {
             }
             body['urls'] << urlsToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
-            String path = "/${restApiKey}/v0.1/scan/"
             requestOptions.headers = ['Content-Type':'application/json']
             requestOptions.body = body
-            ServiceResponse response = burpClient.callApi(restApiUrl, path, null, null, requestOptions, 'POST') 
-            if (response.success) {
+
+            // send api call to trigger scan
+            ServiceResponse response = burpClient.callApi(burpApiUrl, '/scan', null, null, requestOptions, 'POST') 
+            if (response.success && response.headers['Location']) {
                 log.info("Scan task for ${urlsToScan} created successfully")
-                log.info("Getting scan ID...")
-                String scanID = response.headers['Location'] 
+                String scanID = response.headers['Location']
+                log.info("Retrieving scan ID...") 
                 log.info("Scan ID = ${scanID}")
-                String scanStatusUrl = restApiUrl + path + scanID 
+                String scanStatusUrl = burpApiUrl + '/scan/' + scanID 
                 def scanResults = burpClient.callJsonApi(scanStatusUrl, null, null, null, new HttpApiClient.RequestOptions(headers:['Content-Type':'application/json']), 'GET') 
-                while (scanResults.success && scanResults.data?.scan_status != 'succeeded') {
- //                   log.info("Scan ${scanID} Results: ${scanResults}") 
+                while (scanResults.success && scanResults.data?.scan_status != 'succeeded') {        // to-do: improve this by implementing some type of polling / thread solution that can check the results every X minutes
+                    log.info("Scan ${scanID} Results: ${scanResults}") 
                     sleep(10000)
                     if (scanResults.data?.scan_status == 'succeeded') { 
                         return new TaskResult(
