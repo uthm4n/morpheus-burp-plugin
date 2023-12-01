@@ -106,6 +106,11 @@ class BurpScanTaskService extends AbstractTaskService {
                         'urls': []
                 ]
             }
+            else {
+                body = [
+                    'urls': []
+                ]
+            }
             body['urls'] << urlsToScan
             HttpApiClient.RequestOptions requestOptions = new HttpApiClient.RequestOptions()
             requestOptions.headers = ['Content-Type':'application/json']
