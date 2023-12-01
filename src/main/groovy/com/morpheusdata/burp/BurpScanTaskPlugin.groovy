@@ -18,7 +18,7 @@ class BurpScanTaskPlugin extends Plugin {
         BurpScanTaskProvider BurpScanTaskProvider = new BurpScanTaskProvider(this, morpheus)
 	    this.pluginProviders.put(BurpScanTaskProvider.getCode(), BurpScanTaskProvider)
         BurpOptionSourceProvider optionSourceProvider = new BurpOptionSourceProvider(this,morpheus)
-		this.pluginProviders.put(optionSourceProvider.getCode(),optionSourceProvider)
+	    this.pluginProviders.put(optionSourceProvider.getCode(),optionSourceProvider)
         this.setName("Burp Scan");
         this.setAuthor("Uthman Al-Ayek Eqbal");
         this.setDescription("Trigger a Burp Scan from a new Morpheus task type")
