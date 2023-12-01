@@ -36,15 +36,22 @@ class BurpOptionSourceProvider implements OptionSourceProvider{
 
 	@Override
 	List<String> getMethodNames() {
-		return new ArrayList<String>(['defaultScanConfigList', 'scanConfigType'])
+		return new ArrayList<String>(['defaultScanConfigList', 'scanConfigType', 'applicationLoginType'])
 	}
 
-    def scanConfigType(args) {
-        return [
+	def applicationLoginType(args) {
+        	return [
+            [name: 'Username and Password', value: 'UsernameAndPasswordLogin'],
+            [name: 'Recorded Login', value: 'RecordedLogin']
+        ]
+   	 }
+	
+    	def scanConfigType(args) {
+        	return [
             [name: 'Default', value: 'Default'], 
             [name: 'Custom', value: 'Custom']
         ]
-    }
+    	 }
 
 	def defaultScanConfigList(args) {
 		return [
@@ -76,5 +83,5 @@ class BurpOptionSourceProvider implements OptionSourceProvider{
             [name:'Never stop audit due to application errors', value:'Never stop audit due to application errors'],
             [name:'Never stop crawl due to application errors', value:'Never stop crawl due to application errors']
         ]
-	}
+   	 }
 }
