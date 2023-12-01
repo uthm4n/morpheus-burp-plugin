@@ -106,7 +106,9 @@ class BurpScanTaskService extends AbstractTaskService {
                         'urls': []
                 ]
             }
-            else {
+            // space for app login support 
+            
+            else {  // if no application login or scan configuration defined, only inject the urls to scan in the body
                 body = [
                     'urls': []
                 ]
