@@ -75,7 +75,7 @@ class BurpScanTaskService extends AbstractTaskService {
         HttpApiClient burpClient = new HttpApiClient()
 
         try {
-            // test connection to burp
+            // test connection to burp - to-do: figure out why this doesn't work
             String burpApiUrl = restApiUrl + "/${restApiKey}/v0.1"
             try { 
                 def burpOnline = ConnectionUtils.testHostConnectivity(burpApiUrl, null, true, false, null)
