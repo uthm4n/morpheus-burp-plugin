@@ -4,3 +4,6 @@ Adds a new 'Burp Scan' task type into Morpheus that interacts with Burp Suite Pr
 # Build instructions
 1. [Clone the repo](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
 2. Build with `./gradlew shadowJar`
+
+
+## Note: this plugin is undergoing development so please do not use it! 
