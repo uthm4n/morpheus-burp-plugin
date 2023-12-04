@@ -95,16 +95,9 @@ class BurpScanTaskService extends AbstractTaskService {
             // prepare http request
             def body 
             if (scanConfigType == 'Default') {
-                body = [
-                    'application_logins': [],
-                        'scan_configurations' : [
-                            ['name': defaultScanConfig, 'type': 'NamedConfiguration']
-                        ],
-                        'urls': []
-                ]
                 if (applicationLogin == 'on' && applicationLoginType == 'UsernameAndPasswordLogin') {
                     body = [
-                    'application_logins': [
+                        'application_logins': [
                         ['password': applicationLoginPassword, 'type': 'UsernameAndPasswordLogin', 'username': applicationLoginUsername]
                     ],
                         'scan_configurations' : [
@@ -113,14 +106,23 @@ class BurpScanTaskService extends AbstractTaskService {
                         'urls': []
                     ]
                 }
-                if (applicationLogin == 'on' && applicationLoginType == 'RecordedLogin') {
+                else if (applicationLogin == 'on' && applicationLoginType == 'RecordedLogin') {
                     StringEscapeUtils stringEscape = new StringEscapeUtils()
                     String escapedLoginScript = stringEscape.escapeJava(recordedLoginScript)
                     escapedLoginScript = escapedLoginScript.replace("\\n", "")
                     body = [
-                    'application_logins': [
+                        'application_logins': [
                         ['label': recordedLoginLabel, 'script': escapedLoginScript, 'type': 'RecordedLogin']
-                    ],
+                        ],
+                        'scan_configurations' : [
+                            ['name': defaultScanConfig, 'type': 'NamedConfiguration']
+                        ],
+                        'urls': []
+                    ]
+                }
+                else {
+                    body = [
+                        'application_logins': [],
                         'scan_configurations' : [
                             ['name': defaultScanConfig, 'type': 'NamedConfiguration']
                         ],
@@ -140,7 +142,7 @@ class BurpScanTaskService extends AbstractTaskService {
                 ]
             }
 
-            // application logins support here 
+            // space for app login + custom scan config support  
             
             else {  // if no application login or scan configuration defined, only inject the urls to scan in the body
                 body = [
