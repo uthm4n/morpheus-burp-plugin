@@ -65,8 +65,14 @@ class BurpScanTaskService extends AbstractTaskService {
     TaskResult executeTask(Task task, TaskConfig config) {
         // get task options 
         String restApiUrl = task.taskOptions.find { it.optionType.code == 'burp.apiUrl' }?.value
-        String restApiKey =  task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
+        String restApiKey = task.taskOptions.find { it.optionType.code == 'burp.apiKey' }?.value
+        String applicationLoginType = task.taskOptions.find { it.optionType.code == 'burp.applicationLoginType' }?.value
+        String applicationLoginUsername = task.taskOptions.find { it.optionType.code == 'burp.applicationLoginUsername' }?.value 
+        String applicationLoginPassword = task.taskOptions.find { it.optionType.code == 'burp.applicationLoginPassword' }?.value
+        String recordedLoginLabel = task.taskOptions.find { it.optionType.code == 'burp.recordedLoginLabel' }?.value 
+        String recordedLoginScript = task.taskOptions.find { it.optionType.code == 'burp.recordedLoginScript' }?.value 
         String scanConfigType = task.taskOptions.find { it.optionType.code == 'burp.scanConfigurationType' }?.value
+        String applicationLogin = task.taskOptions.find { it.optionType.code == 'burp.applicationLogin' }?.value
         String defaultScanConfig = task.taskOptions.find { it.optionType.code == 'burp.defaultScanConfigurations' }?.value
         String customScanConfig = task.taskOptions.find { it.optionType.code == 'burp.customScanConfiguration' }?.value
         String urlsToScan = task.taskOptions.find { it.optionType.code == 'burp.urlsToScan' }?.value
@@ -90,23 +96,51 @@ class BurpScanTaskService extends AbstractTaskService {
             def body 
             if (scanConfigType == 'Default') {
                 body = [
+                    'application_logins': [],
                         'scan_configurations' : [
                             ['name': defaultScanConfig, 'type': 'NamedConfiguration']
                         ],
                         'urls': []
                 ]
+                if (applicationLogin == 'on' && applicationLoginType == 'UsernameAndPasswordLogin') {
+                    body = [
+                    'application_logins': [
+                        ['password': applicationLoginPassword, 'type': 'UsernameAndPasswordLogin', 'username': applicationLoginUsername]
+                    ],
+                        'scan_configurations' : [
+                            ['name': defaultScanConfig, 'type': 'NamedConfiguration']
+                        ],
+                        'urls': []
+                    ]
+                }
+                if (applicationLogin == 'on' && applicationLoginType == 'RecordedLogin') {
+                    StringEscapeUtils stringEscape = new StringEscapeUtils()
+                    String escapedLoginScript = stringEscape.escapeJava(recordedLoginScript)
+                    escapedLoginScript = escapedLoginScript.replace("\\n", "")
+                    body = [
+                    'application_logins': [
+                        ['label': recordedLoginLabel, 'script': escapedLoginScript, 'type': 'RecordedLogin']
+                    ],
+                        'scan_configurations' : [
+                            ['name': defaultScanConfig, 'type': 'NamedConfiguration']
+                        ],
+                        'urls': []
+                    ]
+                }
             } else if (scanConfigType == 'Custom') {
                 StringEscapeUtils stringEscape = new StringEscapeUtils()
                 String escapedJSONConfig = stringEscape.escapeJava(customScanConfig)
                 escapedJSONConfig = escapedJSONConfig.replace("\\n", "")  // remove the newline characters in preparation for injection into the http body - fussy burp stuff 
                 body = [
+                    'application_logins': [],
                         'scan_configurations' : [
                             ['config': escapedJSONConfig, 'type': 'CustomConfiguration']
                         ],
                         'urls': []
                 ]
             }
-            // space for app login support 
+
+            // application logins support here 
             
             else {  // if no application login or scan configuration defined, only inject the urls to scan in the body
                 body = [
